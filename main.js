@@ -1,25 +1,28 @@
-
-// #ifndef VUE3
-import Vue from 'vue'
+import {createApp} from 'vue'
 import App from './App'
+import {$http} from "@escook/request-miniprogram"
 
-Vue.config.productionTip = false
+$http.baseUrl = 'https://api-hmugo-web.itheima.net'
+uni.$http = $http
+
+$http.beforeRequest = function(option) {
+	wx.showLoading({
+		title: "数据加载中"
+	})
+}
+
+$http.afterRequest = function(option) {
+	wx.hideLoading()
+}
+
+uni.$showMsg =(msg)=>{
+	uni.showToast({
+		title:msg,
+		duration:2000,
+		icon: "none"
+	})
+} 
 
 App.mpType = 'app'
-
-const app = new Vue({
-    ...App
-})
-app.$mount()
-// #endif
-
-// #ifdef VUE3
-import { createSSRApp } from 'vue'
-import App from './App.vue'
-export function createApp() {
-  const app = createSSRApp(App)
-  return {
-    app
-  }
-}
-// #endif
+const app = createApp(App)
+app.mount('#app')
